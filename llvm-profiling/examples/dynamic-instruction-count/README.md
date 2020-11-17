@@ -38,7 +38,7 @@ getelementptr	3
 call	1
 ```
 
-Notice: Current implementation based on LLVM version 5.0.0
+Notice: Current implementation based on LLVM version 11.0.0
 
 ## REF
 - CSE231 project part1: <https://ucsd-pl.github.io/cse231/wi17/part1.html>

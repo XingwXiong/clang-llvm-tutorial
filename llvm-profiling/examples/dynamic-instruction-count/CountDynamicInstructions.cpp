@@ -31,15 +31,15 @@ struct CountDynamicInstructions : public FunctionPass {
   bool runOnFunction(Function &F) override {
 
     // void updateInstrInfo(unsigned num, uint32_t * keys, uint32_t * values);
-    Function *udt = cast<Function>(F.getParent()->getOrInsertFunction(
+    FunctionCallee udt = F.getParent()->getOrInsertFunction(
         "updateInstrInfo", Type::getVoidTy(F.getParent()->getContext()),
         Type::getInt32Ty(F.getParent()->getContext()),
         Type::getInt32PtrTy(F.getParent()->getContext()),
-        Type::getInt32PtrTy(F.getParent()->getContext())));
+        Type::getInt32PtrTy(F.getParent()->getContext()));
 
     // void printOutInstrInfo();
-    Function *prt = cast<Function>(F.getParent()->getOrInsertFunction(
-        "printOutInstrInfo", Type::getVoidTy(F.getParent()->getContext())));
+    FunctionCallee prt = F.getParent()->getOrInsertFunction(
+        "printOutInstrInfo", Type::getVoidTy(F.getParent()->getContext()));
 
     for (Function::iterator B = F.begin(), BE = F.end(); B != BE; ++B) {
       // key: instruction opcode
@@ -152,9 +152,9 @@ int main(int argc, const char *argv[]) {
 
   // Write back the instrumentation info into LLVM IR
   std::error_code EC;
-  std::unique_ptr<tool_output_file> Out(
-      new tool_output_file(InputFilename, EC, sys::fs::F_None));
-  WriteBitcodeToFile(M.get(), Out->os());
+  std::unique_ptr<ToolOutputFile> Out(
+      new ToolOutputFile(InputFilename, EC, sys::fs::F_None));
+  WriteBitcodeToFile(*M.get(), Out->os());
   Out->keep();
 
   return 0;
